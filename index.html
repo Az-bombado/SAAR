@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>S.A.A.R</title>
+
+  <link rel="stylesheet" href="style.css"/>
+  <script defer src="app.js"></script>
+</head>
+<body>
+
+  <!-- LOGIN / CADASTRO -->
+
+  <div id="authContainer" class="auth-container">
+
+    <div class="auth-box">
+
+      <div class="logo-area">
+        <h1>💰 S.A.A.R</h1>
+        <p>Sistema de Agendamento e Administração de Receita</p>
+      </div>
+
+      <div class="tabs">
+        <button id="showLogin" class="tab-btn active-tab">
+          Entrar
+        </button>
+
+        <button id="showCadastro" class="tab-btn">
+          Criar Conta
+        </button>
+      </div>
+
+      <!-- LOGIN -->
+
+      <form id="loginForm" class="auth-form">
+
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="Seu email"
+          required
+        />
+
+        <input
+          type="password"
+          id="loginSenha"
+          placeholder="Sua senha"
+          required
+        />
+
+        <button type="submit" class="auth-btn">
+          Entrar no Sistema
+        </button>
+
+      </form>
+
+      <!-- CADASTRO -->
+
+      <form id="cadastroForm" class="auth-form hidden">
+
+        <input
+          type="text"
+          id="cadastroNome"
+          placeholder="Seu nome"
+          required
+        />
+
+        <input
+          type="email"
+          id="cadastroEmail"
+          placeholder="Seu email"
+          required
+        />
+
+        <input
+          type="password"
+          id="cadastroSenha"
+          placeholder="Crie uma senha"
+          required
+        />
+
+        <button type="submit" class="auth-btn">
+          Criar Conta
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- SISTEMA -->
+
+  <div id="sistemaContainer" class="app hidden-app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+      <div class="sidebar-top">
+
+        <h1>💰 S.A.A.R</h1>
+
+        <button id="toggleSidebar" class="collapse-btn">
+          ☰
+        </button>
+
+      </div>
+
+      <nav>
+
+        <button class="nav-btn active" data-page="dashboard">
+          📊 Dashboard
+        </button>
+
+        <button class="nav-btn" data-page="cadastros">
+          📁 Cadastros
+        </button>
+
+        <button class="nav-btn" data-page="agendamentos">
+          📅 Agendamentos
+        </button>
+
+        <button class="nav-btn" data-page="relatorios">
+          📈 Relatórios
+        </button>
+
+      </nav>
+
+      <button onclick="logout()" class="logout-btn">
+        Sair
+      </button>
+
+    </aside>
+
+    <!-- CONTEUDO -->
+
+    <main class="content">
+
+      <!-- DASHBOARD -->
+
+      <section id="dashboard" class="page active-page">
+
+        <div class="top-bar">
+          <h2>Dashboard</h2>
+        </div>
+
+        <div class="cards">
+
+          <div class="card">
+            <h3>Receita Hoje</h3>
+            <p id="receitaHoje">R$ 0</p>
+          </div>
+
+          <div class="card">
+            <h3>Total Clientes</h3>
+            <p id="totalClientes">0</p>
+          </div>
+
+          <div class="card">
+            <h3>Agendamentos</h3>
+            <p id="totalAgendamentos">0</p>
+          </div>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+          <div class="dashboard-box">
+
+            <h3>Próximos Agendamentos</h3>
+
+            <div id="proximosAgendamentos"></div>
+
+          </div>
+
+          <div class="dashboard-box">
+
+            <h3>Resumo</h3>
+
+            <div class="mini-info">
+              <p>✔ Sistema funcionando</p>
+              <p>✔ Dados salvos localmente</p>
+              <p>✔ Interface otimizada</p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- CADASTROS -->
+
+      <section id="cadastros" class="page">
+
+        <div class="top-bar">
+          <h2>Cadastros</h2>
+        </div>
+
+        <div class="cadastro-grid">
+
+          <!-- CLIENTES -->
+
+          <div class="cadastro-box">
+
+            <h3>Clientes</h3>
+
+            <form id="clienteForm" class="form-grid">
+
+              <input
+                type="text"
+                id="clienteNome"
+                placeholder="Nome"
+                required
+              />
+
+              <input
+                type="text"
+                id="clienteTelefone"
+                placeholder="Telefone"
+                required
+              />
+
+              <input
+                type="email"
+                id="clienteEmail"
+                placeholder="Email"
+                required
+              />
+
+              <select id="clienteAgencia" required>
+                <option value="">Selecione Agência</option>
+                <option>Centro</option>
+                <option>Boqueirão</option>
+                <option>Portão</option>
+              </select>
+
+              <button type="submit">
+                Cadastrar Cliente
+              </button>
+
+            </form>
+
+          </div>
+
+          <!-- PROCEDIMENTOS -->
+
+          <div class="cadastro-box">
+
+            <h3>Procedimentos</h3>
+
+            <form id="procedimentoForm" class="form-grid">
+
+              <input
+                type="text"
+                id="procedimentoNome"
+                placeholder="Nome"
+                required
+              />
+
+              <input
+                type="number"
+                id="procedimentoValor"
+                placeholder="Valor"
+                required
+              />
+
+              <input
+                type="text"
+                id="procedimentoDuracao"
+                placeholder="Duração"
+                required
+              />
+
+              <button type="submit">
+                Cadastrar Procedimento
+              </button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- AGENDAMENTOS -->
+
+      <section id="agendamentos" class="page">
+
+        <div class="top-bar">
+          <h2>Agendamentos</h2>
+        </div>
+
+        <form id="agendamentoForm" class="form-grid">
+
+          <select id="agendamentoCliente" required></select>
+
+          <select id="agendamentoProcedimento" required></select>
+
+          <input
+            type="datetime-local"
+            id="agendamentoData"
+            required
+          />
+
+          <input
+            type="text"
+            id="agendamentoProfissional"
+            placeholder="Profissional"
+            required
+          />
+
+          <button type="submit">
+            Criar Agendamento
+          </button>
+
+        </form>
+
+        <div class="table-container">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Procedimento</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+
+            <tbody id="agendamentosTabela"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+      <!-- RELATORIOS -->
+
+      <section id="relatorios" class="page">
+
+        <div class="top-bar">
+          <h2>Relatórios</h2>
+        </div>
+
+        <div class="cards">
+
+          <div class="card">
+            <h3>Receita Total</h3>
+            <p id="receitaTotal">R$ 0</p>
+          </div>
+
+          <div class="card">
+            <h3>Clientes</h3>
+            <p id="clientesRelatorio">0</p>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>
