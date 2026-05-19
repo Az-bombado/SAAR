@@ -1,6 +1,4 @@
-// =======================
-// LOGIN / CADASTRO
-// =======================
+// LOGIN
 
 const authContainer =
 document.getElementById("authContainer");
@@ -22,6 +20,12 @@ document.getElementById("showCadastro");
 
 let usuarios =
 JSON.parse(localStorage.getItem("usuarios")) || [];
+
+const zerar = false;
+
+if (zerar == true) {
+  localStorage.clear();
+}
 
 showLogin.addEventListener("click", () => {
 
@@ -56,9 +60,8 @@ cadastroForm.addEventListener("submit", e => {
   const senha =
   document.getElementById("cadastroSenha").value;
 
-  const existe = usuarios.find(
-    u => u.email === email
-  );
+  const existe =
+  usuarios.find(u => u.email === email);
 
   if(existe){
     alert("Email já cadastrado");
@@ -79,7 +82,6 @@ cadastroForm.addEventListener("submit", e => {
   alert("Conta criada!");
 
   cadastroForm.reset();
-
 });
 
 // LOGIN
@@ -94,8 +96,10 @@ loginForm.addEventListener("submit", e => {
   const senha =
   document.getElementById("loginSenha").value;
 
-  const usuario = usuarios.find(
-    u => u.email === email &&
+  const usuario =
+  usuarios.find(
+    u =>
+    u.email === email &&
     u.senha === senha
   );
 
@@ -112,8 +116,9 @@ loginForm.addEventListener("submit", e => {
   mostrarSistema();
 });
 
-// LOGIN AUTOMATICO
+// AUTO LOGIN
 
+/*
 if(localStorage.getItem("usuarioLogado")){
   mostrarSistema();
 }
@@ -131,10 +136,9 @@ function logout(){
 
   location.reload();
 }
+*/
 
-// =======================
 // NAVEGAÇÃO
-// =======================
 
 const pages =
 document.querySelectorAll(".page");
@@ -162,9 +166,7 @@ buttons.forEach(button => {
   });
 });
 
-// =======================
 // DADOS
-// =======================
 
 let clientes =
 JSON.parse(localStorage.getItem("clientes")) || [];
@@ -175,9 +177,7 @@ JSON.parse(localStorage.getItem("procedimentos")) || [];
 let agendamentos =
 JSON.parse(localStorage.getItem("agendamentos")) || [];
 
-// =======================
 // CLIENTES
-// =======================
 
 const clienteForm =
 document.getElementById("clienteForm");
@@ -214,9 +214,7 @@ function renderClientes(){
   atualizarSelectClientes();
 }
 
-// =======================
 // PROCEDIMENTOS
-// =======================
 
 const procedimentoForm =
 document.getElementById("procedimentoForm");
@@ -251,9 +249,7 @@ function renderProcedimentos(){
   atualizarSelectProcedimentos();
 }
 
-// =======================
 // AGENDAMENTOS
-// =======================
 
 const agendamentoForm =
 document.getElementById("agendamentoForm");
@@ -288,6 +284,11 @@ agendamentoForm.addEventListener("submit", e => {
     data:
     document.getElementById(
       "agendamentoData"
+    ).value,
+
+    hora:
+    document.getElementById(
+      "agendamentoHora"
     ).value
   });
 
@@ -307,26 +308,37 @@ function renderAgendamentos(){
 
   tabela.innerHTML = "";
 
-  agendamentos.forEach(agendamento => {
+  agendamentos
+    .slice()
+    .reverse()
+    .forEach(agendamento => {
 
-    tabela.innerHTML += `
-      <tr>
-        <td>${agendamento.cliente}</td>
-        <td>${agendamento.procedimento}</td>
-        <td>
-          ${formatarData(agendamento.data)}
-        </td>
-      </tr>
-    `;
-  });
+      tabela.innerHTML += `
+        <tr>
+
+          <td>
+            ${agendamento.cliente}
+          </td>
+
+          <td>
+            ${agendamento.procedimento}
+          </td>
+
+          <td>
+            ${formatarData(agendamento.data)}
+            às
+            ${agendamento.hora}
+          </td>
+
+        </tr>
+      `;
+    });
 
   atualizarDashboard();
   atualizarRelatorios();
 }
 
-// =======================
-// SELECTS
-// =======================
+// SELECT CLIENTES
 
 function atualizarSelectClientes(){
 
@@ -347,6 +359,8 @@ function atualizarSelectClientes(){
   });
 }
 
+// SELECT PROCEDIMENTOS
+
 function atualizarSelectProcedimentos(){
 
   const select =
@@ -366,28 +380,56 @@ function atualizarSelectProcedimentos(){
   });
 }
 
-// =======================
 // DASHBOARD
-// =======================
 
 function atualizarDashboard(){
 
-  const receita = agendamentos.reduce(
+  const hoje =
+  new Date()
+    .toISOString()
+    .split("T")[0];
+
+  const agendamentosHoje =
+  agendamentos.filter(
+    a => a.data === hoje
+  );
+
+  const receitaHoje =
+  agendamentosHoje.reduce(
     (acc, atual) => acc + atual.valor,
     0
   );
 
   document.getElementById(
     "receitaHoje"
-  ).innerText = `R$ ${receita}`;
+  ).innerText = `R$ ${receitaHoje}`;
 
   document.getElementById(
-    "totalClientes"
-  ).innerText = clientes.length;
+    "totalClientesHoje"
+  ).innerText =
+  agendamentosHoje.length;
 
   document.getElementById(
     "totalAgendamentos"
-  ).innerText = agendamentos.length;
+  ).innerText =
+  agendamentosHoje.length;
+
+  document.getElementById(
+    "taxaAtendimento"
+  ).innerText =
+  `${agendamentosHoje.length} atendimentos hoje`;
+
+  document.getElementById(
+    "receitaMedia"
+  ).innerText =
+  `R$ ${
+    agendamentosHoje.length
+      ? Math.floor(
+          receitaHoje /
+          agendamentosHoje.length
+        )
+      : 0
+  } média`;
 
   const lista =
   document.getElementById(
@@ -396,24 +438,40 @@ function atualizarDashboard(){
 
   lista.innerHTML = "";
 
-  agendamentos.slice(-5).forEach(item => {
+  agendamentos
+    .slice()
+    .reverse()
+    .slice(0,5)
+    .forEach(item => {
 
-    lista.innerHTML += `
-      <p style="margin-top:10px;">
-        📅 ${item.cliente} -
-        ${item.procedimento}
-      </p>
-    `;
-  });
+      lista.innerHTML += `
+
+        <div class="agendamento-item">
+
+          <strong>
+            ${item.cliente}
+          </strong>
+
+          <p>
+            ${item.procedimento}
+          </p>
+
+          <small>
+            ${formatarData(item.data)}
+            às ${item.hora}
+          </small>
+
+        </div>
+      `;
+    });
 }
 
-// =======================
 // RELATORIOS
-// =======================
 
 function atualizarRelatorios(){
 
-  const receita = agendamentos.reduce(
+  const receita =
+  agendamentos.reduce(
     (acc, atual) => acc + atual.valor,
     0
   );
@@ -425,11 +483,47 @@ function atualizarRelatorios(){
   document.getElementById(
     "clientesRelatorio"
   ).innerText = clientes.length;
+
+  document.getElementById(
+    "procedimentosRelatorio"
+  ).innerText =
+  procedimentos.length;
+
+  const manager =
+  document.getElementById(
+    "managerClientes"
+  );
+
+  manager.innerHTML = "";
+
+  agendamentos
+    .slice()
+    .reverse()
+    .forEach(item => {
+
+      manager.innerHTML += `
+
+        <div class="manager-item">
+
+          <strong>
+            ${item.cliente}
+          </strong>
+
+          <p>
+            ${item.procedimento}
+          </p>
+
+          <small>
+            ${formatarData(item.data)}
+            às ${item.hora}
+          </small>
+
+        </div>
+      `;
+    });
 }
 
-// =======================
-// AUX
-// =======================
+// SALVAR
 
 function salvarDados(){
 
@@ -449,10 +543,12 @@ function salvarDados(){
   );
 }
 
+// DATA
+
 function formatarData(data){
 
   return new Date(data)
-    .toLocaleString("pt-BR");
+    .toLocaleDateString("pt-BR");
 }
 
 // INIT
