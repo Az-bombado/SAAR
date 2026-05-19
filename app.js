@@ -22,9 +22,14 @@ let usuarios =
 JSON.parse(localStorage.getItem("usuarios")) || [];
 
 const zerar = false;
-
 if (zerar == true) {
-  localStorage.clear();
+
+  localStorage.removeItem("clientes");
+
+  localStorage.removeItem("procedimentos");
+
+  localStorage.removeItem("agendamentos");
+
 }
 
 showLogin.addEventListener("click", () => {
