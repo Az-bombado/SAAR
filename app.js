@@ -118,7 +118,7 @@ loginForm.addEventListener("submit", e => {
 
 // AUTO LOGIN
 
-/*
+
 if(localStorage.getItem("usuarioLogado")){
   mostrarSistema();
 }
@@ -136,7 +136,7 @@ function logout(){
 
   location.reload();
 }
-*/
+
 
 // NAVEGAÇÃO
 
